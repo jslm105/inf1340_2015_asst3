@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 
 """ Assignment 3, Exercise 2, INF1340, Fall, 2015. Kanadia
@@ -71,11 +72,28 @@ def decide(input_file, countries_file):
 
 def valid_passport_format(passport_number):
     """
-    Checks whether a pasport number is five sets of five alpha-number characters separated by dashes
+    Checks whether a passport number is five sets of five alpha-number characters separated by dashes
     :param passport_number: alpha-numeric string
     :return: Boolean; True if the format is valid, False otherwise
     """
-    return False
+
+    passport_regex = re.compile(r'\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w')
+    passport_match = passport_regex.search(passport_number)
+
+    for passport in json_contents:
+        if passport_match is None:
+            return False
+        else:
+            return True
+
+with open("test_returning_citizen.json", "r") as file_reader:
+    file_contents = file_reader.read()
+
+json_contents = json.loads(file_contents)
+for citizen in json_contents:
+    passport_number = citizen['passport']
+
+valid_passport_format(passport_number)
 
 
 def valid_visa_format(visa_code):
