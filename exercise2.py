@@ -34,6 +34,26 @@ containing the following keys:
 '''
 COUNTRIES = None
 
+with open("test_returning_citizen.json", "r") as file_reader:
+    traveller_file_contents = file_reader.read()
+
+traveller_entry_records = json.loads(traveller_file_contents)
+
+with open("countries.json", "r") as file_reader:
+    country_list = file_reader.read()
+
+country_list_info = json.loads(country_list)
+
+#Not sure if necessary, but do use some
+for traveller in traveller_entry_records:
+    passport_number = traveller['passport']
+    first_name = traveller['first_name']
+    last_name = traveller['last_name']
+    home = traveller['home']['country']
+    birth_date = traveller['birth_date']
+    entry_reason = traveller['entry_reason']
+    entry_from = traveller['from']['country']
+
 
 #####################
 # HELPER FUNCTIONS ##
@@ -67,7 +87,64 @@ def decide(input_file, countries_file):
         "Accept", "Reject", and "Quarantine"
     """
 
-    return ["Reject"]
+
+#Check required info for completeness
+    #Check first/ last name
+        #if incomplete
+            #return reject
+    #Check DOB
+        #if incomplete
+            #return reject
+    #Check passport number
+        #if incomplete
+            #return reject
+    #Check location (home)
+        #if incomplete
+            #return reject
+    #Check location (travelling from)
+        #if incomplete
+            #return reject
+    #Check reason for entry
+        #if incomplete
+            #return reject
+
+#Check location
+    #if location = unknown
+        #return reject
+    #elif:
+        #location = KAN
+        #return accept
+
+for traveller in traveller_entry_records:
+    if traveller['home']['country'] == "KAN":
+        print("Accept")
+    else:
+        #placeholder to see if working
+        print ("Not home country")
+    #else:
+        #keep going
+
+#if reason_for_entry = visit and visitor_visa_required = 1
+    #must have visa and visa must be less than two years
+#else:
+    #return reject
+
+for traveller in traveller_entry_records:
+    if traveller['entry_reason'] == "visit":
+        for country in country_list_info:
+            if country_list_info[country]['transit_visa_required'] == "1":
+                print traveller
+                break
+            else:
+                print "No visa required"
+
+#If from[country] has warning then
+    #return quarantine
+
+
+
+
+    #return ["Reject"]
 
 
 def valid_passport_format(passport_number):
@@ -76,25 +153,16 @@ def valid_passport_format(passport_number):
     :param passport_number: alpha-numeric string
     :return: Boolean; True if the format is valid, False otherwise
     """
-
     passport_regex = re.compile(r'\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w')
     passport_match = passport_regex.search(passport_number)
 
-    for passport in json_contents:
+    for passport in traveller_entry_records:
         if passport_match is None:
-            return False
+            print "False"
         else:
-            return True
-
-with open("test_returning_citizen.json", "r") as file_reader:
-    file_contents = file_reader.read()
-
-json_contents = json.loads(file_contents)
-for citizen in json_contents:
-    passport_number = citizen['passport']
+            print "True"
 
 valid_passport_format(passport_number)
-
 
 def valid_visa_format(visa_code):
     """
@@ -103,7 +171,10 @@ def valid_visa_format(visa_code):
     :return: Boolean; True if the format is valid, False otherwise
 
     """
+#Not sure about this one (since there are no visa codes in the json files
+#but it would be formatted very similarly to the others
 
+#valid_visa_format(visa_code)
 
 def valid_date_format(date_string):
     """
@@ -111,5 +182,15 @@ def valid_date_format(date_string):
     :param date_string: date to be checked
     :return: Boolean True if the format is valid, False otherwise
     """
+    valid_date_format_regex = re.compile(r'\d\d\d\d-\d\d-\d\d')
+    valid_date_match = valid_date_format_regex.search(birth_date)
 
-    return False
+    #Currently this only works for birth date
+    for date in traveller_entry_records:
+        if valid_date_match is None:
+            print "False"
+        else:
+            print "True"
+
+valid_date_format(valid_date_format)
+
