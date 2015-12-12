@@ -52,8 +52,15 @@ def selection(t, f):
     [["A", "B", "C"], [4, 5, 6]]
 
     """
-
-    return []
+    selection_list = []
+    selection_list.append(t[0])
+    for row in t[1:]:
+        if f(row) is True:
+            selection_list.append(row)
+    if len(selection_list) == 1:
+        return None
+    else:
+        return selection_list
 
 
 def projection(t, r):
@@ -84,4 +91,3 @@ def cross_product(t1, t2):
     """
 
     return []
-
