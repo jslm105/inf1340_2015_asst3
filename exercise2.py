@@ -1,5 +1,4 @@
-
-#!/usr/bin/env python3
+# !/usr/bin/env python3
 
 """ Assignment 3, Exercise 2, INF1340, Fall, 2015. Kanadia
 
@@ -34,25 +33,15 @@ containing the following keys:
 '''
 COUNTRIES = None
 
-with open("test_returning_citizen.json", "r") as file_reader:
-    traveller_file_contents = file_reader.read()
-
-traveller_entry_records = json.loads(traveller_file_contents)
-
-with open("countries.json", "r") as file_reader:
-    country_list = file_reader.read()
-
-country_list_info = json.loads(country_list)
-
-#Not sure if necessary, but do use some
-for traveller in traveller_entry_records:
-    passport_number = traveller['passport']
-    first_name = traveller['first_name']
-    last_name = traveller['last_name']
-    home = traveller['home']['country']
-    birth_date = traveller['birth_date']
-    entry_reason = traveller['entry_reason']
-    entry_from = traveller['from']['country']
+# Not sure if necessary, but do use some
+#for traveller in traveller_entry_records:
+#    passport_number = traveller['passport']
+#    first_name = traveller['first_name']
+#    last_name = traveller['last_name']
+#    home = traveller['home']['country']
+#    birth_date = traveller['birth_date']
+#    entry_reason = traveller['entry_reason']
+#    entry_from = traveller['from']['country']
 
 
 #####################
@@ -73,6 +62,74 @@ def is_more_than_x_years_ago(x, date_string):
 
     return (date - x_years_ago).total_seconds() < 0
 
+########################
+# VALIDATION FUNCTIONS #
+########################
+
+def valid_passport_format(passport_number):
+    """
+    Checks whether a passport number is five sets of five alpha-number characters separated by dashes
+    :param passport_number: alpha-numeric string
+    :return: Boolean; True if the format is valid, False otherwise
+    """
+    passport_regex = re.compile(r'\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w')
+    passport_match = passport_regex.search(passport_number)
+
+    #removes any passport incorrectly using underscores as \w will pass this type of character
+    if "_" in passport_number:
+        print "False"
+    else:
+        if passport_match is None:
+            print "False"
+        else:
+            print "True"
+
+
+def valid_date_format(date_string):
+    """
+    Checks whether a date has the format YYYY-mm-dd in numbers
+    :param date_string: date to be checked
+    :return: Boolean True if the format is valid, False otherwise
+    """
+    valid_date_format_regex = re.compile(r'\d\d\d\d-\d\d-\d\d')
+    valid_date_match = valid_date_format_regex.search(date_string)
+
+    #Currently this only works for birth date
+    if valid_date_match is None:
+        print "False"
+    else:
+        #To ensure the D.O.B. is not in the future.
+        if is_more_than_x_years_ago(0, date_string):
+            print "True"
+        else:
+            print "False"
+
+valid_date_format("1958-07-07")
+
+def valid_visa_format(visa_code):
+    """
+    Checks whether a visa code is two groups of five alphanumeric characters
+    :param visa_code: alphanumeric string
+    :return: Boolean; True if the format is valid, False otherwise
+
+    """
+    #NOTE: VISAS MAY BE MORE COMPLEX REQUIRING ALL TO BE UNIQUE CHARACTERS. PUTTING A QUESTION ON BB TO SEE...
+    visa_regex = re.compile(r'\w\w\w\w\w-\w\w\w\w\w')
+    visa_match = visa_regex.search(visa_code)
+
+    #removes any visa incorrectly using underscores as \w will pass this type of character
+    if "_" in visa_code:
+        print "False"
+    else:
+        if visa_match is None:
+            print "False"
+        else:
+            print "True"
+
+
+#########################
+# MAIN DECISION PROGRAM #
+#########################
 
 def decide(input_file, countries_file):
     """
@@ -87,110 +144,105 @@ def decide(input_file, countries_file):
         "Accept", "Reject", and "Quarantine"
     """
 
+    #This opens the json files passed into the function allowing multiple json test files to be run.
+    with open(input_file, "r") as file_reader:
+        traveller_file_contents = file_reader.read()
 
-#Check required info for completeness
-    #Check first/ last name
-        #if incomplete
-            #return reject
-    #Check DOB
-        #if incomplete
-            #return reject
-    #Check passport number
-        #if incomplete
-            #return reject
-    #Check location (home)
-        #if incomplete
-            #return reject
-    #Check location (travelling from)
-        #if incomplete
-            #return reject
-    #Check reason for entry
-        #if incomplete
-            #return reject
+    traveller_entry_records = json.loads(traveller_file_contents)
 
-#Check location
-    #if location = unknown
-        #return reject
-    #elif:
-        #location = KAN
-        #return accept
+    with open(countries_file, "r") as file_reader:
+        country_list = file_reader.read()
 
-for traveller in traveller_entry_records:
-    if traveller['home']['country'] == "KAN":
-        print("Accept")
-    else:
-        #placeholder to see if working
-        print ("Not home country")
-    #else:
-        #keep going
+    country_list_info = json.loads(country_list)
 
-#if reason_for_entry = visit and visitor_visa_required = 1
-    #must have visa and visa must be less than two years
-#else:
-    #return reject
+#TESTING FOR COMPLETENESS
+#Clearly there will be a value in using separate validation functions for passport, visa and birth date
+# numbers. Whether we will want to do so for things like name and such (which is relatively simple)
+# or just keep that stuff here in the main function is up us as a group.
 
-for traveller in traveller_entry_records:
-    if traveller['entry_reason'] == "visit":
-        for country in country_list_info:
-            if country_list_info[country]['transit_visa_required'] == "1":
-                print traveller
-                break
-            else:
-                print "No visa required"
-
-#If from[country] has warning then
-    #return quarantine
-
-
-
-
-    #return ["Reject"]
-
-
-def valid_passport_format(passport_number):
-    """
-    Checks whether a passport number is five sets of five alpha-number characters separated by dashes
-    :param passport_number: alpha-numeric string
-    :return: Boolean; True if the format is valid, False otherwise
-    """
-    passport_regex = re.compile(r'\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w')
-    passport_match = passport_regex.search(passport_number)
+#CALLING RESULTS OF VALIDATION FUNCTIONS
+#Note: Currently we have our Validation Functions set to print "True" or "False" tho clearly
+#we want it to return a boolean that will then be used to return "Accept", "Quarantine", "Reject"
 
     for passport in traveller_entry_records:
-        if passport_match is None:
-            print "False"
+        testing_passport = (passport["passport"])
+        valid_passport_format(testing_passport)
+
+    for passport in traveller_entry_records:
+        testing_birth_date = (passport["birth_date"])
+        valid_date_format(testing_birth_date)
+#Note: These are the inputs I am currently running but we should create a few more json files for different types of tests.
+decide("test_returning_citizen.json", "countries.json")
+
+# Below is Jessica's psuedocode organizing an order to check the program.
+# Check required info for completeness
+# Check first/ last name
+#   if incomplete
+#   return reject
+# Check DOB
+#   if incomplete
+#     return reject
+# Check passport number
+#   if incomplete
+#     return reject
+# Check location (home)
+#   if incomplete
+#     return reject
+# Check location (travelling from)
+#   if incomplete
+#     return reject
+# Check reason for entry
+#   if incomplete
+#     reject
+
+# Check location
+#   if location = unknown
+#     return reject
+#   elif:
+#   location = KAN
+#     return accept
+    for traveller in traveller_entry_records:
+        if traveller['home']['country'] == "KAN":
+            print("Accept")
         else:
-            print "True"
+        # placeholder to see if working
+            print ("Not home country")
+        # else:
+        # keep going
 
-valid_passport_format(passport_number)
+        # if reason_for_entry = visit and visitor_visa_required = 1
+        # must have visa and visa must be less than two years
+        # else:
+        # return reject
+# Check visa
+#  if reason for entry is visit
+#    if country on passport requires visa
+#      check visa is proper format
+#      check visa date is proper format (can likely reuse birthday date check function for this)
+#      check visa is less than 2 years old
+    for traveller in traveller_entry_records:
+        if traveller['entry_reason'] == "visit":
+            for country in country_list_info:
+                if country_list_info[country]['transit_visa_required'] == "1":
+                    print traveller
+                    break
+                else:
+                    print "No visa required"
+# Check Quarantine
+#  if home country on passport has medical advisory
+#    then quarantine
+#  elif country travelling through has medical advisory
+#    then quarantine
 
-def valid_visa_format(visa_code):
-    """
-    Checks whether a visa code is two groups of five alphanumeric characters
-    :param visa_code: alphanumeric string
-    :return: Boolean; True if the format is valid, False otherwise
 
-    """
-#Not sure about this one (since there are no visa codes in the json files
-#but it would be formatted very similarly to the others
 
-#valid_visa_format(visa_code)
 
-def valid_date_format(date_string):
-    """
-    Checks whether a date has the format YYYY-mm-dd in numbers
-    :param date_string: date to be checked
-    :return: Boolean True if the format is valid, False otherwise
-    """
-    valid_date_format_regex = re.compile(r'\d\d\d\d-\d\d-\d\d')
-    valid_date_match = valid_date_format_regex.search(birth_date)
 
-    #Currently this only works for birth date
-    for date in traveller_entry_records:
-        if valid_date_match is None:
-            print "False"
-        else:
-            print "True"
 
-valid_date_format(valid_date_format)
+                # If from[country] has warning then
+                # return quarantine
 
+
+
+
+                # return ["Reject"]
