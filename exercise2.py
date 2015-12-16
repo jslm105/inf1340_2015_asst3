@@ -134,6 +134,7 @@ def valid_visa_format(visa_number):
             return True
 
 
+
 #########################
 # MAIN DECISION PROGRAM #
 #########################
@@ -204,13 +205,13 @@ def decide(input_file, countries_file):
         home_city = traveller['home']['city']
         home_region = traveller['home']['region']
         home_country = (traveller['home']['country']).upper()
-        entry_reason = traveller['entry_reason']
+        entry_reason = (traveller['entry_reason']).upper()
         from_city = traveller['from']['city']
         from_region = traveller['from']['region']
         from_country = (traveller['from']['country']).upper()
 
         required_fields = [passport_number, first_name, last_name, birth_date, home_city, home_region,
-                           home_country, entry_reason.upper(), from_city, from_region, from_country]
+                           home_country, entry_reason, from_city, from_region, from_country]
 
         if home_country in visitor_visa_countries:
             visa_date = traveller['visa']['date']
@@ -252,12 +253,11 @@ def decide(input_file, countries_file):
                 traveller_info.append(valid_visa_format(visa_code))
                 # Check that visa is up-to-date
                 if valid_date_format(visa_date):
-                    traveller_info.append(is_more_than_x_years_ago(2, visa_date))
+                    traveller_info.append(not(is_more_than_x_years_ago(2, visa_date)))
 
                 else:
-                    traveller_info.append(False)
-            else:
-                traveller_info.append(True)
+                        traveller_info.append(False)
+
 
         # Check if traveller should be quarantined
         if from_country in med_advisory_countries:
@@ -266,7 +266,7 @@ def decide(input_file, countries_file):
             traveller_info.append("Quarantine")
         else:
             traveller_info.append(True)
-        
+
         # Decide to accept/reject/quarantine
         if "Quarantine" in traveller_info:
             decision.append("Quarantine")
