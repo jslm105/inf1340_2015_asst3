@@ -15,7 +15,6 @@ import re
 import datetime
 import json
 
-
 ######################
 ## global constants ##
 ######################
@@ -194,7 +193,6 @@ def decide(input_file, countries_file):
         from_city = traveller['from']['city']
         from_region = traveller['from']['region']
         from_country = traveller['from']['country']
-
 
         required_fields = [passport_number, first_name, last_name, birth_date, home_city, home_region,
                            home_country.upper(), entry_reason, from_city, from_region, from_country.upper()]
