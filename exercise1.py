@@ -71,6 +71,11 @@ def projection(t, r):
 	Perform projection operation on table t
 	using the attributes subset r.
 
+	:param: t: a table (list of lists)
+	:param: r: item found in a list (table)
+	:returns: new table (list of lists)
+	:raises: AttributeError if item not found in table
+
 	Example:
 	> R = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
 	> projection(R, ["A", "C"])
