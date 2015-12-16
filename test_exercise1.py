@@ -13,7 +13,6 @@ __license__ = "MIT License"
 
 from exercise1 import selection, projection, cross_product, UnknownAttributeException, remove_duplicates
 
-
 ###########
 # TABLES ##
 ###########
@@ -33,12 +32,24 @@ R2 = [["Department", "Head"],
       ["production", "Mori"],
       ["sales", "Brown"]]
 
+SUSPECTS = [["Surname", "Title", "Age"],
+            ["Mustard", "Colonel", 63],
+            ["Scarlet", "Ms.", 28],
+            ["Green", "Mr.", 37],
+            ["White", "Mrs.", 56],
+            ["Plum", "Professor", 48]]
+
+CLUES = [["Weapon", "Location"],
+         ["Candlestick", "Conservatory"],
+         ["Rope", "Music Room"],
+         ["Revolver", "Drawing Room"]]
+
 
 #####################
 # HELPER FUNCTIONS ##
 #####################
-def is_equal(t1, t2):
 
+def is_equal(t1, t2):
     t1.sort()
     t2.sort()
 
@@ -60,6 +71,10 @@ def filter_employees(row):
     return row[-2] >= 30 and row[-1] > 3500
 
 
+def filter_suspects(row):
+    return row[-1] > 40
+
+
 ###################
 # TEST FUNCTIONS ##
 ###################
@@ -74,6 +89,15 @@ def test_selection():
               ["Smith", "Mark", 40, 3900]]
 
     assert is_equal(result, selection(EMPLOYEES, filter_employees))
+
+
+def test_selection_our_test():
+    result = [["Surname", "Title", "Age"],
+              ["Mustard", "Colonel", 63],
+              ["White", "Mrs.", 56],
+              ["Plum", "Professor", 48]]
+
+    assert is_equal(result, selection(SUSPECTS, filter_suspects))
 
 
 def test_projection():
