@@ -14,6 +14,9 @@ __license__ = "MIT License"
 import re
 import datetime
 import json
+import os
+
+
 
 ######################
 ## global constants ##
@@ -92,10 +95,10 @@ def valid_date_format(date_string):
         if int(valid_date_match.group(1)) < 1900:
             return False
         # Ensure valid month entry
-        elif int(valid_date_match.group(2)) not in range(1,12):
+        elif int(valid_date_match.group(2)) not in range(1,13):
             return False
         # Ensure valid date entry
-        elif int(valid_date_match.group(3)) not in range(1,31):
+        elif int(valid_date_match.group(3)) not in range(1,32):
             return False
         # Ensure correct number of days in Feb.
         elif int(valid_date_match.group(2)) in [2] and int(valid_date_match.group(3)) > 29:
@@ -107,6 +110,7 @@ def valid_date_format(date_string):
         elif is_more_than_x_years_ago(0, date_string):
             return True
 
+#valid_date_format("1969-12-11")
 
 
 def valid_visa_format(visa_number):
@@ -242,13 +246,14 @@ def decide(input_file, countries_file):
         traveller_info.append(valid_date_format(birth_date))
 
         # Check if visa is required
-        if entry_reason == "visit":
+        if entry_reason == "VISIT":
             if home_country in visitor_visa_countries:
                 # Check that visa is correct format
                 traveller_info.append(valid_visa_format(visa_code))
                 # Check that visa is up-to-date
                 if valid_date_format(visa_date):
                     traveller_info.append(is_more_than_x_years_ago(2, visa_date))
+
                 else:
                     traveller_info.append(False)
             else:
@@ -261,7 +266,7 @@ def decide(input_file, countries_file):
             traveller_info.append("Quarantine")
         else:
             traveller_info.append(True)
-
+        
         # Decide to accept/reject/quarantine
         if "Quarantine" in traveller_info:
             decision.append("Quarantine")
@@ -271,6 +276,8 @@ def decide(input_file, countries_file):
             decision.append("Accept")
 
     return decision
+
+#decide("test_visitors_with_visas.json", "countries.json")
 
 # CALLING RESULTS OF VALIDATION FUNCTIONS
 # Note: Currently we have our Validation Functions set to print "True" or "False" tho clearly
