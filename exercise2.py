@@ -203,14 +203,14 @@ def decide(input_file, countries_file):
         birth_date = traveller['birth_date']
         home_city = traveller['home']['city']
         home_region = traveller['home']['region']
-        home_country = traveller['home']['country']
+        home_country = (traveller['home']['country']).upper()
         entry_reason = traveller['entry_reason']
         from_city = traveller['from']['city']
         from_region = traveller['from']['region']
-        from_country = traveller['from']['country']
+        from_country = (traveller['from']['country']).upper()
 
         required_fields = [passport_number, first_name, last_name, birth_date, home_city, home_region,
-                           home_country.upper(), entry_reason, from_city, from_region, from_country.upper()]
+                           home_country, entry_reason.upper(), from_city, from_region, from_country]
 
         if home_country in visitor_visa_countries:
             visa_date = traveller['visa']['date']
