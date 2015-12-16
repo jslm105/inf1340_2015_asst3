@@ -6,9 +6,9 @@ Computer-based immigration office for Kanadia
 
 """
 
-__author__ = 'Susan Sim'
+__author__ = 'Aaron Campbell, Jessica Mallender, Jake Miller, and Susan Sim'
 __email__ = "ses@drsusansim.org"
-__copyright__ = "2015 Susan Sim"
+__copyright__ = "2015 Campbell, Mallender, Miller, Sim"
 __license__ = "MIT License"
 
 import re
