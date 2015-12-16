@@ -77,12 +77,12 @@ def valid_passport_format(passport_number):
 
     #removes any passport incorrectly using underscores as \w will pass this type of character
     if "_" in passport_number:
-        print "False"
+        return False
     else:
         if passport_match is None:
-            print "False"
+            return False
         else:
-            print "True"
+            return True
 
 
 def valid_date_format(date_string):
@@ -119,12 +119,12 @@ def valid_visa_format(visa_code):
 
     #removes any visa incorrectly using underscores as \w will pass this type of character
     if "_" in visa_code:
-        print "False"
+        return False
     else:
         if visa_match is None:
-            print "False"
+            return False
         else:
-            print "True"
+            return True
 
 
 #########################
@@ -160,6 +160,58 @@ def decide(input_file, countries_file):
 # numbers. Whether we will want to do so for things like name and such (which is relatively simple)
 # or just keep that stuff here in the main function is up us as a group.
 
+#Checks that all required fields are not empty
+    #does this by creating a list of required fields and then running through
+    #that list and seeing if it is blank for a traveller's record
+
+    for traveller in traveller_entry_records:
+        #print traveller
+        traveller_info = []
+        traveller_info.append(traveller)
+        #print traveller_info
+
+        passport_number = traveller['passport']
+        first_name = traveller['first_name']
+        last_name = traveller['last_name']
+        birth_date = traveller['birth_date']
+        home_city = traveller['home']['city']
+        home_region = traveller['home']['region']
+        home_country = traveller['home']['country']
+        entry_reason = traveller['entry_reason']
+        from_city = traveller['from']['city']
+        from_region = traveller['from']['region']
+        from_country = traveller['from']['country']
+
+        required_fields = []
+        required_fields = [passport_number, first_name, last_name, birth_date, home_city, home_region,\
+                           home_country, entry_reason, from_city, from_region, from_country]
+
+
+
+        for field in required_fields:
+            if field == "":
+                processing_step_1 = False
+                break
+            else:
+                processing_step_1 = True
+
+
+        #If all required fields are filled in then checks that countries are recognized as valid countries
+            #does this by checking if the home_country and from_country of the traveller's json file are
+            # are a key in the dictionary of countries
+
+        if processing_step_1 == True:
+            if home_country and from_country in country_list_info.keys():
+                processing_step_2 = True
+            else:
+                processing_step_2 = False
+
+            #THis is not needed in actual program, just checking it if is correct
+            if processing_step_2 == True:
+                print (first_name + " info is filled in and has a valid countries listed ")
+            else:
+                print (first_name + "info is either does not have valid countries listed")
+
 #CALLING RESULTS OF VALIDATION FUNCTIONS
 #Note: Currently we have our Validation Functions set to print "True" or "False" tho clearly
 #we want it to return a boolean that will then be used to return "Accept", "Quarantine", "Reject"
@@ -171,6 +223,7 @@ def decide(input_file, countries_file):
     for passport in traveller_entry_records:
         testing_birth_date = (passport["birth_date"])
         valid_date_format(testing_birth_date)
+
 #Note: These are the inputs I am currently running but we should create a few more json files for different types of tests.
 decide("test_returning_citizen.json", "countries.json")
 
@@ -201,12 +254,12 @@ decide("test_returning_citizen.json", "countries.json")
 #   elif:
 #   location = KAN
 #     return accept
-    for traveller in traveller_entry_records:
-        if traveller['home']['country'] == "KAN":
-            print("Accept")
-        else:
+#    for traveller in traveller_entry_records:
+#        if traveller['home']['country'] == "KAN":
+#            print("Accept")
+#        else:
         # placeholder to see if working
-            print ("Not home country")
+#            print ("Not home country")
         # else:
         # keep going
 
@@ -219,25 +272,36 @@ decide("test_returning_citizen.json", "countries.json")
 #    if country on passport requires visa
 #      check visa is proper format
 #      check visa date is proper format (can likely reuse birthday date check function for this)
-#      check visa is less than 2 years old
-    for traveller in traveller_entry_records:
-        if traveller['entry_reason'] == "visit":
-            for country in country_list_info:
-                if country_list_info[country]['transit_visa_required'] == "1":
-                    print traveller
-                    break
-                else:
-                    print "No visa required"
+#      check visa is less than 2 years old #    for traveller in traveller_entry_records:
+#        if traveller['entry_reason'] == "visit":
+#            for country in country_list_info:
+#                if country_list_info[country]['transit_visa_required'] == "1":
+#                    print traveller
+#                    break
+#                else:
+#                    print "No visa required"
 # Check Quarantine
 #  if home country on passport has medical advisory
 #    then quarantine
 #  elif country travelling through has medical advisory
 #    then quarantine
 
+#med_advisory_countries = []
+#for country in country_list_info:
+#     #print country_list_info[country]['medical_advisory']
+#     if country_list_info[country]['medical_advisory'] == "":
+#         print "No med adv"
+#     else:
+#         print country_list_info[country]['medical_advisory']
+#         med_advisory_countries.append(country)
 
+#print med_advisory_countries
 
-
-
+#for traveller in traveller_entry_records:
+#    if traveller['from']['country'] in med_advisory_countries:
+#        print "quarantine"
+#    else:
+#        print ("no quarantine required")
 
                 # If from[country] has warning then
                 # return quarantine
