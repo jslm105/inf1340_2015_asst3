@@ -158,7 +158,7 @@ def test_selection_none():
 
 def test_projection():
     """
-    Test projection operation.
+    Test projection operation for multiple attribute
     return: list of columns named in attributes
     """
 
@@ -170,25 +170,48 @@ def test_projection():
 
     assert is_equal(result, projection(EMPLOYEES, ["Surname", "FirstName"]))
 
+
+def test_projection_different_order():
+    """
+    Test projection for single attribute projection
+    :return: list of column named in attribute
+    """
+    result = [["FirstName"],
+              ["Mary"],
+              ["Lucy"],
+              ["Nico"],
+              ["Mark"]]
+
+    assert is_equal(result, projection(EMPLOYEES, ["FirstName"]))
+
+
 def test_projection_error():
     """
-
+    Checks to make sure that the UnknownAttributeException is
+    raised when the indicated attribute is not found within the table
+    and when attribute is left blank
     :return:
     """
+    try:
+        projection(EMPLOYEES, [""])
+    except UnknownAttributeException:
+        assert True
 
     try:
         projection(EMPLOYEES, ["Department"])
-    except AttributeError:
+    except UnknownAttributeException:
         assert True
-
-
-
 
 ##########################
 # Cross Product Function #
 ##########################
 
+
 def test_projection_our_test():
+    """
+    Test cross product operation
+    :return: list of cross product rows
+    """
     result = [["Surname", "Title"],
               ["Mustard", "Colonel"],
               ["Scarlet", "Ms."],
@@ -234,6 +257,7 @@ def test_cross_product_our_test():
               ["The Cure", "Disintegration", "Fiction", 1989]]
 
     assert is_equal(result, cross_product(A1, A2))
+
 
 def test_cross_product_none():
     """

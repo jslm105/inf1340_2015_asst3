@@ -68,7 +68,6 @@ def selection(t, f):
         return selection_list
 
 
-
 def projection(t, r):
     """
     Perform projection operation on table t
@@ -91,8 +90,8 @@ def projection(t, r):
             index = t[0].index(item)
         counter = 0
         for row in t:
-            if item != t[0][index]:
-                raise AttributeError
+            if item not in t[0]:
+                raise UnknownAttributeException
             if r.index(item) == 0:
                 new_table.append([row[index]])
             elif r.index(item) > 0:
@@ -111,7 +110,6 @@ def cross_product(t1, t2):
     > R1 = [["A", "B"], [1,2], [3,4]]
     > R2 = [["C", "D"], [5,6]]
     [["A", "B", "C", "D"], [1, 2, 5, 6], [3, 4, 5, 6]]
-
 
     """
     new_table = t1[0] + t2[0]
