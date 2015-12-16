@@ -123,8 +123,8 @@ def test_projection():
 
     assert is_equal(result, projection(EMPLOYEES, ["Surname", "FirstName"]))
 
-def test_projection_our_test():
 
+def test_projection_our_test():
     result = [["Surname", "Title"],
               ["Mustard", "Colonel"],
               ["Scarlet", "Ms."],
@@ -132,7 +132,7 @@ def test_projection_our_test():
               ["White", "Mrs."],
               ["Plum", "Professor"]]
 
-    assert is_equal(result, projection(SUSPECTS,["Surname", "Title"]))
+    assert is_equal(result, projection(SUSPECTS, ["Surname", "Title"]))
 
 
 def test_cross_product():
