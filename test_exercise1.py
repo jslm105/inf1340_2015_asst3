@@ -11,7 +11,7 @@ __email__ = "ses@drsusansim.org"
 __copyright__ = "2015 Susan Sim"
 __license__ = "MIT License"
 
-from exercise1 import selection, projection, cross_product
+from exercise1 import selection, projection, cross_product, UnknownAttributeException, remove_duplicates
 
 
 ###########
