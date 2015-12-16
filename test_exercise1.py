@@ -6,9 +6,9 @@ Test module for exercise3.py
 
 """
 
-__author__ = 'Susan Sim'
+__author__ = 'Aaron Campbell, Jessica Mallender, Jake Miller, and Susan Sim'
 __email__ = "ses@drsusansim.org"
-__copyright__ = "2015 Susan Sim"
+__copyright__ = "2015 Campbell, Mallender, Miller, Sim"
 __license__ = "MIT License"
 
 from exercise1 import selection, projection, cross_product, UnknownAttributeException, remove_duplicates
@@ -55,6 +55,8 @@ A2 = [["Label", "Year"],
       ["Fiction", 1989]]
 
 
+
+
 #####################
 # HELPER FUNCTIONS ##
 #####################
@@ -76,12 +78,31 @@ def filter_employees(row):
     MORE THAN 3500.
     :param row: A List in the format:
         [{Surname}, {FirstName}, {Age}, {Salary}]
-    :return: True if the row satisfies the condition.
+    :return: True if the row satisfies the condition, None if empty
     """
     return row[-2] >= 30 and row[-1] > 3500
 
 
+def filter_employees_none(row):
+    """
+    Check if employee represented by row
+    is AT LEAST 50 years old and makes
+    MORE THAN 50000.
+    :param row: A List in the format:
+        [{Surname}, {FirstName}, {Age}, {Salary}]
+    :return: True if the row satisfies the condition, None if empty
+    """
+    return row[-2] >= 50 and row[-1] > 5000
+
+
 def filter_suspects(row):
+    """
+    Check if suspects age represented by row
+    is at least 40 years old
+    :param row: A List in the format:
+        [{Surname}, {Title}, {Age}]
+    :return: True if the row satisfies the condition, None if empty
+    """
     return row[-1] > 40
 
 
@@ -89,9 +110,15 @@ def filter_suspects(row):
 # TEST FUNCTIONS ##
 ###################
 
+######################
+# Selection Function #
+######################
+
+
 def test_selection():
     """
     Test select operation.
+    return: a new table the result of applying function to original table
     """
 
     result = [["Surname", "FirstName", "Age", "Salary"],
@@ -102,6 +129,10 @@ def test_selection():
 
 
 def test_selection_our_test():
+    """
+    Another test select operation.
+    return: a new table the result of applying function to original table
+    """
     result = [["Surname", "Title", "Age"],
               ["Mustard", "Colonel", 63],
               ["White", "Mrs.", 56],
@@ -110,9 +141,22 @@ def test_selection_our_test():
     assert is_equal(result, selection(SUSPECTS, filter_suspects))
 
 
+def test_selection_none():
+    """
+    Tests selection function to see if None is returned when
+    it results in an empty table
+    return: None (empty table)
+    """
+    assert (selection(EMPLOYEES, filter_employees_none)) is None
+
+######################
+# Projection Function #
+######################
+
 def test_projection():
     """
     Test projection operation.
+    return: list of columns named in attributes
     """
 
     result = [["Surname", "FirstName"],
@@ -123,6 +167,18 @@ def test_projection():
 
     assert is_equal(result, projection(EMPLOYEES, ["Surname", "FirstName"]))
 
+def test_projection_value_error():
+    """
+    This test the projection function to make sure than a value error
+    is raised if an incorrect value is entered as the projection
+    :return: Value Error
+    """
+
+
+
+##########################
+# Cross Product Function #
+##########################
 
 def test_projection_our_test():
     result = [["Surname", "Title"],
@@ -138,6 +194,7 @@ def test_projection_our_test():
 def test_cross_product():
     """
     Test cross product operation.
+    return: list of cross product rows
     """
 
     result = [["Employee", "Department", "Department", "Head"],
@@ -152,6 +209,11 @@ def test_cross_product():
 
 
 def test_cross_product_our_test():
+    """
+    Another test cross product operation
+    :return:list of cross product rows
+    """
+
     result = [["Artist", "Album", "Label", "Year"],
               ["The Beatles", "Rubber Soul", "Apple", 1965],
               ["The Beatles", "Rubber Soul", "Decca", 1969],
@@ -164,3 +226,6 @@ def test_cross_product_our_test():
               ["The Cure", "Disintegration", "Fiction", 1989]]
 
     assert is_equal(result, cross_product(A1, A2))
+
+
+
