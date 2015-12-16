@@ -54,7 +54,9 @@ A2 = [["Label", "Year"],
       ["Decca", 1969],
       ["Fiction", 1989]]
 
+BLANK = [[]]
 
+BLANK2 = [[]]
 
 
 #####################
@@ -153,6 +155,7 @@ def test_selection_none():
 # Projection Function #
 ######################
 
+
 def test_projection():
     """
     Test projection operation.
@@ -167,12 +170,17 @@ def test_projection():
 
     assert is_equal(result, projection(EMPLOYEES, ["Surname", "FirstName"]))
 
-def test_projection_value_error():
+def test_projection_error():
     """
-    This test the projection function to make sure than a value error
-    is raised if an incorrect value is entered as the projection
-    :return: Value Error
+
+    :return:
     """
+
+    try:
+        projection(EMPLOYEES, ["Department"])
+    except AttributeError:
+        assert True
+
 
 
 
@@ -227,5 +235,12 @@ def test_cross_product_our_test():
 
     assert is_equal(result, cross_product(A1, A2))
 
+def test_cross_product_none():
+    """
+    Tests selection function to see if None is returned when
+    it results in an empty table
+    return: None (empty table)
+    """
+    assert cross_product(BLANK, BLANK2) is None
 
 

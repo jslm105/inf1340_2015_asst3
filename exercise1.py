@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 
-""" Assignment 3, Exercise 2, INF1340, Fall, 2015. DBMS
+""" Assignment 3, Exercise 1, INF1340, Fall, 2015. DBMS
 
 This module performs table operations on database tables
 implemented as lists of lists. """
 
-__author__ = 'Susan Sim'
+__author__ = 'Aaron Campbell, Jessica Mallender, Jake Miller, and Susan Sim'
 __email__ = "ses@drsusansim.org"
-__copyright__ = "2015 Susan Sim"
+__copyright__ = "2015 Campbell, Mallender, Miller, Sim"
 __license__ = "MIT License"
+
+
 
 
 #####################
@@ -61,9 +63,10 @@ def selection(t, f):
         if f(row) is True:
             selection_list.append(row)  # if return True append to new table
     if len(selection_list) == 1:  # return None if only first row was added to the table
-        return None
+        print None
     else:
         return selection_list
+
 
 
 def projection(t, r):
@@ -118,4 +121,7 @@ def cross_product(t1, t2):
             l3 = l1 + l2
             new_table_2.append(l3)
     new_table_2.insert(0, new_table)
-    return new_table_2
+    if len(new_table_2) <= 1:
+        return None
+    else:
+        return new_table_2
