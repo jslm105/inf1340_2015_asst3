@@ -15,6 +15,7 @@ import re
 import datetime
 import json
 
+
 ######################
 ## global constants ##
 ######################
@@ -52,6 +53,7 @@ def is_more_than_x_years_ago(x, date_string):
 
     return (date - x_years_ago).total_seconds() < 0
 
+
 ########################
 # VALIDATION FUNCTIONS #
 ########################
@@ -65,7 +67,7 @@ def valid_passport_format(passport_number):
     passport_regex = re.compile(r'\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w')
     passport_match = passport_regex.search(passport_number)
 
-    #removes any passport incorrectly using underscores as \w will pass this type of character
+    # removes any passport incorrectly using underscores as \w will pass this type of character
     if "_" in passport_number:
         return False
     else:
@@ -84,31 +86,32 @@ def valid_date_format(date_string):
     valid_date_format_regex = re.compile(r'\d\d\d\d-\d\d-\d\d')
     valid_date_match = valid_date_format_regex.search(date_string)
 
-    #Currently this only works for birth date
+    # Currently this only works for birth date
     if valid_date_match is None:
-        print "False"
+        return False
     else:
-        #To ensure the D.O.B. is not in the future.
+        # To ensure the D.O.B. is not in the future.
         if is_more_than_x_years_ago(0, date_string):
-            print "True"
+            return True
         else:
-            print "False"
+            return False
 
-valid_date_format("1958-07-07")
 
-def valid_visa_format(visa_code):
+# valid_date_format("1958-07-07")
+
+def valid_visa_format(visa_number):
     """
     Checks whether a visa code is two groups of five alphanumeric characters
-    :param visa_code: alphanumeric string
+    :param visa_number: alphanumeric string
     :return: Boolean; True if the format is valid, False otherwise
 
     """
-    #NOTE: VISAS MAY BE MORE COMPLEX REQUIRING ALL TO BE UNIQUE CHARACTERS. PUTTING A QUESTION ON BB TO SEE...
+    # NOTE: VISAS MAY BE MORE COMPLEX REQUIRING ALL TO BE UNIQUE CHARACTERS. PUTTING A QUESTION ON BB TO SEE...
     visa_regex = re.compile(r'\w\w\w\w\w-\w\w\w\w\w')
-    visa_match = visa_regex.search(visa_code)
+    visa_match = visa_regex.search(visa_number)
 
-    #removes any visa incorrectly using underscores as \w will pass this type of character
-    if "_" in visa_code:
+    # removes any visa incorrectly using underscores as \w will pass this type of character
+    if "_" in visa_number:
         return False
     else:
         if visa_match is None:
@@ -134,7 +137,7 @@ def decide(input_file, countries_file):
         "Accept", "Reject", and "Quarantine"
     """
 
-    #This opens the json files passed into the function allowing multiple json test files to be run.
+    # This opens the json files passed into the function allowing multiple json test files to be run.
     with open(input_file, "r") as file_reader:
         traveller_file_contents = file_reader.read()
 
@@ -145,22 +148,23 @@ def decide(input_file, countries_file):
 
     country_list_info = json.loads(country_list)
 
-#TESTING FOR COMPLETENESS
-#Clearly there will be a value in using separate validation functions for passport, visa and birth date
-# numbers. Whether we will want to do so for things like name and such (which is relatively simple)
-# or just keep that stuff here in the main function is up us as a group.
+    # TESTING FOR COMPLETENESS
+    # Clearly there will be a value in using separate validation functions for passport, visa and birth date
+    # numbers. Whether we will want to do so for things like name and such (which is relatively simple)
+    # or just keep that stuff here in the main function is up us as a group.
 
-#Checks that all required fields are not empty
-    #does this by creating a list of required fields and then running through
-    #that list and seeing if it is blank for a traveller's record
+    # Checks that all required fields are not empty
+    # does this by creating a list of required fields and then running through
+    # that list and seeing if it is blank for a traveller's record
 
-#makes list of countries that require visutor visas
+    # makes list of countries that require visitor visas
     visitor_visa_countries = []
     for country in country_list_info:
         if country_list_info[country]["visitor_visa_required"] == "1":
             visitor_visa_countries.append(country)
-            #print visitor_visa_countries
+            # print visitor_visa_countries
 
+            # makes lists of countries according to medical advisories
     med_advisory_countries = []
     non_med_advisory_countries = []
     for country in country_list_info:
@@ -168,18 +172,16 @@ def decide(input_file, countries_file):
             non_med_advisory_countries.append(country)
         else:
             med_advisory_countries.append(country)
-            #print med_advisory_countries
+            # print med_advisory_countries
 
-
-#Checks that all required fields are not empty
-    #does this by creating a list of required fields and then running through
-    #that list and seeing if it is blank for a traveller's record
+    decision = []
+    # Checks that all required fields are not empty
+    # does this by creating a list of required fields and then running through
+    # that list and seeing if it is blank for a traveller's record
 
     for traveller in traveller_entry_records:
-        #print traveller
+        # A list of every check performed on traveller
         traveller_info = []
-        traveller_info.append(traveller)
-        #print traveller_info
 
         passport_number = traveller['passport']
         first_name = traveller['first_name']
@@ -193,75 +195,77 @@ def decide(input_file, countries_file):
         from_region = traveller['from']['region']
         from_country = traveller['from']['country']
 
-        required_fields = []
-        required_fields = [passport_number, first_name, last_name, birth_date, home_city, home_region,\
-                           home_country, entry_reason, from_city, from_region, from_country]
 
+        required_fields = [passport_number, first_name, last_name, birth_date, home_city, home_region,
+                           home_country.upper(), entry_reason, from_city, from_region, from_country.upper()]
 
+        if home_country in visitor_visa_countries:
+            visa_date = traveller['visa']['date']
+            required_fields.append(visa_date)
+            visa_code = traveller['visa']['code']
+            required_fields.append(visa_code)
 
         for field in required_fields:
             if field == "":
-                processing_step_1 = False
+                traveller_info.append(False)
                 break
             else:
-                processing_step_1 = True
+                traveller_info.append(True)
 
 
-        #If all required fields are filled in then checks that countries are recognized as valid countries
-            #does this by checking if the home_country and from_country of the traveller's json file are
-            # are a key in the dictionary of countries
+                # If all required fields are filled in then checks that countries are recognized as valid countries
+                # does this by checking if the home_country and from_country of the traveller's json file are
+                # are a key in the dictionary of countries
 
-        if processing_step_1 == True:
-            if home_country and from_country in country_list_info.keys():
-                processing_step_2 = True
-            else:
-                processing_step_2 = False
+        if home_country == "KAN":
+            traveller_info.append(True)
+        elif home_country in country_list_info.keys():
+            traveller_info.append(True)
+        elif from_country in country_list_info.keys():
+            traveller_info.append(True)
         else:
-            decision = False
+            traveller_info.append(False)
 
+        # Check formatting of passport
+        traveller_info.append(valid_passport_format(passport_number))
 
-        #This checks if home country is KAN and 
-        if processing_step_2 == True:
-            if traveller['home']['country'] == "KAN":
-                processing_step_3 = True
-            elif traveller['entry_reason'] == "visit":
-                if traveller["home"]["country"] in visitor_visa_countries:
-                    if valid_visa_format(passport_number) == True:
-                        processing_step_3 = True
-                    else:
-                        decision = False
+        # Check formatting of D.O.B.
+        traveller_info.append(valid_date_format(birth_date))
+
+        # Check if visa is required
+        if entry_reason == "visit":
+            if home_country in visitor_visa_countries:
+                # Check that visa is correct format
+                traveller_info.append(valid_visa_format(visa_code))
+                # Check that visa is up-to-date
+                if valid_date_format(visa_date):
+                    traveller_info.append(is_more_than_x_years_ago(2, visa_date))
                 else:
-                    processing_step_3 = True
-
-        #if the visa is valid and or no visa required then
-        if processing_step_3 == True:
-            if traveller["from"]["country"] in med_advisory_countries:
-                decision = "Quarantine"
+                    traveller_info.append(False)
             else:
-                decision = True
+                traveller_info.append(True)
 
-        #Decides if accepted/reject/quarantined
-        if decision == True:
-            print (first_name + ": Accepted")
-        elif decision == False:
-            print(first_name + ": Rejected")
+        # Check if traveller should be quarantined
+        if from_country in med_advisory_countries:
+            traveller_info.append("Quarantine")
+        if home_country in med_advisory_countries:
+            traveller_info.append("Quarantine")
         else:
-            print (first_name + ": Quarantine")
+            traveller_info.append(True)
 
+        # Decide to accept/reject/quarantine
+        if "Quarantine" in traveller_info:
+            decision.append("Quarantine")
+        elif False in traveller_info:
+            decision.append("Reject")
+        else:
+            decision.append("Accept")
 
+    return decision
 
-#CALLING RESULTS OF VALIDATION FUNCTIONS
-#Note: Currently we have our Validation Functions set to print "True" or "False" tho clearly
-#we want it to return a boolean that will then be used to return "Accept", "Quarantine", "Reject"
+# CALLING RESULTS OF VALIDATION FUNCTIONS
+# Note: Currently we have our Validation Functions set to print "True" or "False" tho clearly
+# we want it to return a boolean that will then be used to return "Accept", "Quarantine", "Reject"
 
-    for passport in traveller_entry_records:
-        testing_passport = (passport["passport"])
-        valid_passport_format(testing_passport)
-
-    for passport in traveller_entry_records:
-        testing_birth_date = (passport["birth_date"])
-        valid_date_format(testing_birth_date)
-
-#Note: These are the inputs I am currently running but we should create a few more json files for different types of tests.
-decide("test_returning_citizen.json", "countries.json")
-
+# Note: These are the inputs I am currently running but we should create a few more json files for different types of tests.
+# decide("test_returning_citizen.json", "countries.json")
