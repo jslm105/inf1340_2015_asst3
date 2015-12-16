@@ -100,6 +100,8 @@ def projection(t, r):
 
 def cross_product(t1, t2):
 	"""
+	:param: t1
+	:param: t2
 	Return the cross-product of tables t1 and t2.
 
 	Example:
@@ -109,5 +111,11 @@ def cross_product(t1, t2):
 
 
 	"""
-
-	return []
+	new_table = t1[0] + t2[0]
+	new_table_2 = []
+	for l1 in t1[1:]:
+		for l2 in t2[1:]:
+			l3 = l1 + l2
+			new_table_2.append(l3)
+	new_table_2.insert(0, new_table)
+	return new_table_2
