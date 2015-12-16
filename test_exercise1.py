@@ -44,6 +44,16 @@ CLUES = [["Weapon", "Location"],
          ["Rope", "Music Room"],
          ["Revolver", "Drawing Room"]]
 
+A1 = [["Artist", "Album"],
+      ["The Beatles", "Rubber Soul"],
+      ["Rolling Stones", "Let It Bleed"],
+      ["The Cure", "Disintegration"]]
+
+A2 = [["Label", "Year"],
+      ["Apple", 1965],
+      ["Decca", 1969],
+      ["Fiction", 1989]]
+
 
 #####################
 # HELPER FUNCTIONS ##
@@ -128,3 +138,18 @@ def test_cross_product():
               ["White", "production", "sales", "Brown"]]
 
     assert is_equal(result, cross_product(R1, R2))
+
+
+def test_cross_product_our_test():
+    result = [["Artist", "Album", "Label", "Year"],
+              ["The Beatles", "Rubber Soul", "Apple", 1965],
+              ["The Beatles", "Rubber Soul", "Decca", 1969],
+              ["The Beatles", "Rubber Soul", "Fiction", 1989],
+              ["Rolling Stones", "Let It Bleed", "Apple", 1965],
+              ["Rolling Stones", "Let It Bleed", "Decca", 1969],
+              ["Rolling Stones", "Let It Bleed", "Fiction", 1989],
+              ["The Cure", "Disintegration", "Apple", 1965],
+              ["The Cure", "Disintegration", "Decca", 1969],
+              ["The Cure", "Disintegration", "Fiction", 1989]]
+
+    assert is_equal(result, cross_product(A1, A2))
