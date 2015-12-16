@@ -82,21 +82,32 @@ def valid_date_format(date_string):
     :param date_string: date to be checked
     :return: Boolean True if the format is valid, False otherwise
     """
-    valid_date_format_regex = re.compile(r'\d\d\d\d-\d\d-\d\d')
+    valid_date_format_regex = re.compile(r'(\d\d\d\d)-(\d\d)-(\d\d)')
     valid_date_match = valid_date_format_regex.search(date_string)
 
-    # Currently this only works for birth date
     if valid_date_match is None:
         return False
     else:
-        # To ensure the D.O.B. is not in the future.
-        if is_more_than_x_years_ago(0, date_string):
-            return True
-        else:
+        # Assuming anybody over 115 years or visas that old are not travelling
+        if int(valid_date_match.group(1)) < 1900:
             return False
+        # Ensure valid month entry
+        elif int(valid_date_match.group(2)) not in range(1,12):
+            return False
+        # Ensure valid date entry
+        elif int(valid_date_match.group(3)) not in range(1,31):
+            return False
+        # Ensure correct number of days in Feb.
+        elif int(valid_date_match.group(2)) in [2] and int(valid_date_match.group(3)) > 29:
+            return False
+        # Ensure correctness for 30-day months
+        elif int(valid_date_match.group(2)) in [4, 6, 9, 10] and int(valid_date_match.group(3)) > 30:
+            return False
+        # Ensure date is not in the future
+        elif is_more_than_x_years_ago(0, date_string):
+            return True
 
 
-# valid_date_format("1958-07-07")
 
 def valid_visa_format(visa_number):
     """
