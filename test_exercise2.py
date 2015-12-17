@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 
 """ Module to test papers.py  """
@@ -30,6 +29,7 @@ def test_returning():
     assert decide("test_returning_citizen.json", "countries.json") ==\
         ["Accept", "Accept", "Quarantine"]
 
+
 def test_visitors_with_visas():
     """
     Visitors to KAN
@@ -42,6 +42,7 @@ def test_visitors_with_visas():
     """
     assert decide("test_visitors_with_visas.json", "countries.json") ==\
         ["Accept", "Reject", 'Reject']
+
 
 def test_incomplete_entries():
     """
@@ -66,6 +67,7 @@ def test_incomplete_entries():
          "Reject", "Reject", "Reject", "Reject", "Reject", "Quarantine", \
          "Reject", "Reject"]
 
+
 def test_improper_passports():
     """
     Travellers with passports with more or less characters or "_" and mixed letter cases
@@ -77,6 +79,7 @@ def test_improper_passports():
     assert decide("test_improper_passports.json", "countries.json") ==\
            ["Reject", "Reject", "Reject"]
 
+
 def test_improper_visas():
     """
     Travellers with visas with more or less characters or "_" and mixed letter cases
@@ -87,6 +90,7 @@ def test_improper_visas():
     """
     assert decide("test_improper_passports.json", "countries.json") ==\
            ["Reject", "Reject", "Reject"]
+
 
 def test_mixed_capitalization():
     """
@@ -101,6 +105,7 @@ def test_mixed_capitalization():
     assert decide("test_mixed_capitalization.json", "countries.json") ==\
         ["Accept", "Accept", "Accept", "Accept"]
 
+
 def test_date_formats():
     """
     Travellers with various date formats
@@ -112,6 +117,5 @@ def test_date_formats():
           country so quarantine should take priority over reject
     :return:
     """
-    assert decide("test_improper_birthday_format.json", "countries.json")==\
+    assert decide("test_improper_birthday_format.json", "countries.json") ==\
         ["Accept", "Reject", "Reject", 'Reject', "Quarantine"]
-
