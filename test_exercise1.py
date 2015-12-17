@@ -107,6 +107,15 @@ def filter_suspects(row):
     """
     return row[-1] > 40
 
+def filter_employees_names(row):
+    """
+    Check if employee represented by row
+    has a first name containing "o"
+    :param row: A List in the format:
+        [{Surname}, {FirstName}, {Age}, {Salary}]
+    :return: True if the row satisfies the condition, None if empty
+    """
+    return "o" in row[1]
 
 ###################
 # TEST FUNCTIONS ##
@@ -142,6 +151,15 @@ def test_selection_our_test():
 
     assert is_equal(result, selection(SUSPECTS, filter_suspects))
 
+def test_selection_one_row():
+    """
+    Tests selection function to see if selection table
+    of just one row is properly generated.
+    return: a new table the result of applying function to original table)
+    """
+    result = [["Surname", "FirstName", "Age", "Salary"],
+              ["Verdi", "Nico", 36, 4500]]
+    assert is_equal(result, selection(EMPLOYEES, filter_employees_names))
 
 def test_selection_none():
     """

@@ -59,7 +59,8 @@ def selection(t, f):
 
     """
     selection_list = []
-    for row in t:  # iterate through the rows of a table
+    selection_list.append(t[0])
+    for row in t[1:]:  # iterate through the rows of a table
         if f(row) is True:
             selection_list.append(row)  # if return True append to new table
     if len(selection_list) == 1:  # return None if only first row was added to the table
