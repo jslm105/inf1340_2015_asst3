@@ -90,14 +90,16 @@ def test_improper_visas():
 
 def test_mixed_capitalization():
     """
-    Traveller with valid country codes and passport numbers but with
-    mixed letter cases
+    Traveller with valid country codes, passport numbers, and entry reasons
+    but with mixed letter cases
         1)Passport is valid format but some capitals some lower case letters
-        2)Country code is not all caps, but still valid
+        2)Home country code is in lowercase
+        3)From country code is in lowercase
+        4)Entry reason is mixed capitalization
 
     """
     assert decide("test_mixed_capitalization.json", "countries.json") ==\
-        ["Accept", "Accept"]
+        ["Accept", "Accept", "Accept", "Accept"]
 
 def test_date_formats():
     """
