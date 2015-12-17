@@ -6,35 +6,14 @@ Computer-based immigration office for Kanadia
 
 """
 
+import re
+import datetime
+import json
+
 __author__ = 'Aaron Campbell, Jessica Mallender, Jake Miller, and Susan Sim'
 __email__ = "ses@drsusansim.org"
 __copyright__ = "2015 Campbell, Mallender, Miller, Sim"
 __license__ = "MIT License"
-
-import re
-import datetime
-import json
-import os
-
-
-
-######################
-## global constants ##
-######################
-REQUIRED_FIELDS = ["passport", "first_name", "last_name",
-                   "birth_date", "home", "entry_reason", "from"]
-
-######################
-## global variables ##
-######################
-'''
-countries:
-dictionary mapping country codes (lowercase strings) to dictionaries
-containing the following keys:
-"code","name","visitor_visa_required",
-"transit_visa_required","medical_advisory"
-'''
-COUNTRIES = None
 
 
 #####################
@@ -66,12 +45,14 @@ def valid_passport_format(passport_number):
     :param passport_number: alpha-numeric string
     :return: Boolean; True if the format is valid, False otherwise
     """
+    # creates a regex to check passport numbers against
     passport_regex = re.compile(r'\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w')
     passport_match = passport_regex.search(passport_number)
 
-    # removes any passport incorrectly using underscores as \w will pass this type of character
+    # fails any passport incorrectly using underscores as \w will pass this type of character
     if "_" in passport_number:
         return False
+    # only passes passports that conform to regex
     else:
         if passport_match is None:
             return False
@@ -81,13 +62,15 @@ def valid_passport_format(passport_number):
 
 def valid_date_format(date_string):
     """
-    Checks whether a date has the format YYYY-mm-dd in numbers
+    Checks whether a date has the format YYYY-MM-DD in numbers
     :param date_string: date to be checked
     :return: Boolean True if the format is valid, False otherwise
     """
+    # Creates a regex to check date fields against
     valid_date_format_regex = re.compile(r'(\d\d\d\d)-(\d\d)-(\d\d)')
     valid_date_match = valid_date_format_regex.search(date_string)
 
+    # Rejects any dates which do not conform to regex
     if valid_date_match is None:
         return False
     else:
@@ -95,10 +78,10 @@ def valid_date_format(date_string):
         if int(valid_date_match.group(1)) < 1900:
             return False
         # Ensure valid month entry
-        elif int(valid_date_match.group(2)) not in range(1,13):
+        elif int(valid_date_match.group(2)) not in range(1, 13):
             return False
         # Ensure valid date entry
-        elif int(valid_date_match.group(3)) not in range(1,32):
+        elif int(valid_date_match.group(3)) not in range(1, 32):
             return False
         # Ensure correct number of days in Feb.
         elif int(valid_date_match.group(2)) in [2] and int(valid_date_match.group(3)) > 29:
@@ -110,8 +93,6 @@ def valid_date_format(date_string):
         elif is_more_than_x_years_ago(0, date_string):
             return True
 
-#valid_date_format("1969-12-11")
-
 
 def valid_visa_format(visa_number):
     """
@@ -120,19 +101,19 @@ def valid_visa_format(visa_number):
     :return: Boolean; True if the format is valid, False otherwise
 
     """
-    # NOTE: VISAS MAY BE MORE COMPLEX REQUIRING ALL TO BE UNIQUE CHARACTERS. PUTTING A QUESTION ON BB TO SEE...
+    # Creates a regex to check visa numbers against
     visa_regex = re.compile(r'\w\w\w\w\w-\w\w\w\w\w')
     visa_match = visa_regex.search(visa_number)
 
-    # removes any visa incorrectly using underscores as \w will pass this type of character
+    # Removes any visa incorrectly using underscores as \w will pass this type of character
     if "_" in visa_number:
         return False
+    # Only passes visas which conform to regex
     else:
         if visa_match is None:
             return False
         else:
             return True
-
 
 
 #########################
@@ -141,7 +122,7 @@ def valid_visa_format(visa_number):
 
 def decide(input_file, countries_file):
     """
-    Decides whether a traveller's entry into Kanadia should be accepted
+    Decides whether a traveller's entry into Kanadia should be accepted, rejected, or quarantined
 
     :param input_file: The name of a JSON formatted file that contains
         cases to decide
@@ -152,7 +133,7 @@ def decide(input_file, countries_file):
         "Accept", "Reject", and "Quarantine"
     """
 
-    # This opens the json files passed into the function allowing multiple json test files to be run.
+    # Opens json files passed into the function allowing multiple json test files to be run.
     with open(input_file, "r") as file_reader:
         traveller_file_contents = file_reader.read()
 
@@ -163,23 +144,13 @@ def decide(input_file, countries_file):
 
     country_list_info = json.loads(country_list)
 
-    # TESTING FOR COMPLETENESS
-    # Clearly there will be a value in using separate validation functions for passport, visa and birth date
-    # numbers. Whether we will want to do so for things like name and such (which is relatively simple)
-    # or just keep that stuff here in the main function is up us as a group.
-
-    # Checks that all required fields are not empty
-    # does this by creating a list of required fields and then running through
-    # that list and seeing if it is blank for a traveller's record
-
-    # makes list of countries that require visitor visas
+    # Create a list of countries currently requiring a visitor visitor
     visitor_visa_countries = []
     for country in country_list_info:
         if country_list_info[country]["visitor_visa_required"] == "1":
             visitor_visa_countries.append(country)
-            # print visitor_visa_countries
 
-            # makes lists of countries according to medical advisories
+    # Create a list of countries that currently are under medical advisory
     med_advisory_countries = []
     non_med_advisory_countries = []
     for country in country_list_info:
@@ -187,17 +158,16 @@ def decide(input_file, countries_file):
             non_med_advisory_countries.append(country)
         else:
             med_advisory_countries.append(country)
-            # print med_advisory_countries
 
+    # Create a list for final decision output
     decision = []
-    # Checks that all required fields are not empty
-    # does this by creating a list of required fields and then running through
-    # that list and seeing if it is blank for a traveller's record
 
+    # For every traveller passing through immigration
     for traveller in traveller_entry_records:
-        # A list of every check performed on traveller
+        # Creates a list to act as checklist of traveller under review
         traveller_info = []
 
+        # Creates all required field local variables and forces uppercase for fields that may be affected
         passport_number = traveller['passport']
         first_name = traveller['first_name']
         last_name = traveller['last_name']
@@ -210,15 +180,19 @@ def decide(input_file, countries_file):
         from_region = traveller['from']['region']
         from_country = (traveller['from']['country']).upper()
 
+        # Creates a list of all required fields to be checked
         required_fields = [passport_number, first_name, last_name, birth_date, home_city, home_region,
                            home_country, entry_reason, from_city, from_region, from_country]
 
+        # Checks if traveller will require a visa for entry
         if home_country in visitor_visa_countries:
+            # In such cases adds visa fields to those required
             visa_date = traveller['visa']['date']
             required_fields.append(visa_date)
             visa_code = traveller['visa']['code']
             required_fields.append(visa_code)
 
+        # Checks for incomplete fields and fails if any are found
         for field in required_fields:
             if field == "":
                 traveller_info.append(False)
@@ -226,38 +200,38 @@ def decide(input_file, countries_file):
             else:
                 traveller_info.append(True)
 
-
                 # If all required fields are filled in then checks that countries are recognized as valid countries
                 # does this by checking if the home_country and from_country of the traveller's json file are
                 # are a key in the dictionary of countries
 
+        # Returning citizens (those who were born in KAN) are passed
         if home_country == "KAN":
             traveller_info.append(True)
+        # Visitors from unrecognized countries failed
         elif home_country in country_list_info.keys():
             traveller_info.append(True)
+        # Only visitors arriving from recognized countries passed
         elif from_country in country_list_info.keys():
             traveller_info.append(True)
         else:
             traveller_info.append(False)
 
-        # Check formatting of passport
+        # Check formatting of traveller's passport
         traveller_info.append(valid_passport_format(passport_number))
 
-        # Check formatting of D.O.B.
+        # Check formatting of traveller's D.O.B.
         traveller_info.append(valid_date_format(birth_date))
 
         # Check if visa is required
         if entry_reason == "VISIT":
             if home_country in visitor_visa_countries:
-                # Check that visa is correct format
+                # Check that traveller's visa is correct format
                 traveller_info.append(valid_visa_format(visa_code))
                 # Check that visa is up-to-date
                 if valid_date_format(visa_date):
                     traveller_info.append(not(is_more_than_x_years_ago(2, visa_date)))
-
                 else:
                         traveller_info.append(False)
-
 
         # Check if traveller should be quarantined
         if from_country in med_advisory_countries:
@@ -276,12 +250,3 @@ def decide(input_file, countries_file):
             decision.append("Accept")
 
     return decision
-
-#decide("test_visitors_with_visas.json", "countries.json")
-
-# CALLING RESULTS OF VALIDATION FUNCTIONS
-# Note: Currently we have our Validation Functions set to print "True" or "False" tho clearly
-# we want it to return a boolean that will then be used to return "Accept", "Quarantine", "Reject"
-
-# Note: These are the inputs I am currently running but we should create a few more json files for different types of tests.
-# decide("test_returning_citizen.json", "countries.json")
