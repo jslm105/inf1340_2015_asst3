@@ -33,11 +33,15 @@ def test_returning():
 def test_visitors_with_visas():
     """
     Visitors to KAN
-        1)traveller from a foreign country that does not require a visitor visa
-          and is medically safe
+        1)traveller from a foreign country that requires a visitor visa
+          and visa is valid
+        2)traveller from a foreign country that requires a visa
+          and visa is expired
+        3)traveller from a foreign country that requires a visa
+          and visa is improperly formatted
     """
     assert decide("test_visitors_with_visas.json", "countries.json") ==\
-        ["Accept"]
+        ["Accept", "Reject", 'Reject']
 
 def test_incomplete_entries():
     """
@@ -99,8 +103,3 @@ def test_date_formats():
     assert decide("test_improper_birthday_format.json", "countries.json")==\
         ["Accept", "Reject", "Reject", 'Reject', "Quarantine"]
 
-
-###Next test cases should be something that checks that an out of date visa fails (unless
-## we already do this and I missed it
-
-##Any others?
