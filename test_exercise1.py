@@ -6,12 +6,13 @@ Test module for exercise3.py
 
 """
 
+from exercise1 import selection, projection, cross_product, UnknownAttributeException, remove_duplicates
+
 __author__ = 'Aaron Campbell, Jessica Mallender, Jake Miller, and Susan Sim'
 __email__ = "ses@drsusansim.org"
 __copyright__ = "2015 Campbell, Mallender, Miller, Sim"
 __license__ = "MIT License"
 
-from exercise1 import selection, projection, cross_product, UnknownAttributeException, remove_duplicates
 
 ###########
 # TABLES ##

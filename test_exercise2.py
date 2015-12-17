@@ -2,18 +2,16 @@
 
 """ Module to test papers.py  """
 
-__author__ = 'Susan Sim'
-__email__ = "ses@drsusansim.org"
-
-__copyright__ = "2014 Susan Sim"
-__license__ = "MIT License"
-
-__status__ = "Prototype"
-
 # imports one per line
 import pytest
 import os
 from exercise2 import decide
+
+__author__ = 'Aaron Campbell, Jessica Mallender, Jake Miller, and Susan Sim'
+__email__ = "ses@drsusansim.org"
+__copyright__ = "2015 Campbell, Mallender, Miller, Sim"
+__license__ = "MIT License"
+
 
 DIR = "test_jsons/"
 os.chdir(DIR)
@@ -63,8 +61,8 @@ def test_incomplete_entries():
         14)Missing visa code
     """
     assert decide("test_incomplete_entries.json", "countries.json") ==\
-        ["Reject", "Reject", "Reject", "Reject", "Reject", "Reject", \
-         "Reject", "Reject", "Reject", "Reject", "Reject", "Quarantine", \
+        ["Reject", "Reject", "Reject", "Reject", "Reject", "Reject",
+         "Reject", "Reject", "Reject", "Reject", "Reject", "Quarantine",
          "Reject", "Reject"]
 
 
@@ -77,7 +75,7 @@ def test_improper_passports():
 
     """
     assert decide("test_improper_passports.json", "countries.json") ==\
-           ["Reject", "Reject", "Reject"]
+        ["Reject", "Reject", "Reject"]
 
 
 def test_improper_visas():
@@ -89,7 +87,7 @@ def test_improper_visas():
 
     """
     assert decide("test_improper_passports.json", "countries.json") ==\
-           ["Reject", "Reject", "Reject"]
+        ["Reject", "Reject", "Reject"]
 
 
 def test_mixed_capitalization():
