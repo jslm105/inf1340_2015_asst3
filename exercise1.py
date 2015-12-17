@@ -11,8 +11,6 @@ __copyright__ = "2015 Campbell, Mallender, Miller, Sim"
 __license__ = "MIT License"
 
 
-
-
 #####################
 # HELPER FUNCTIONS ##
 #####################
@@ -86,9 +84,9 @@ def projection(t, r):
 
     """
     new_table = []
-    for item in r:
-        if item in t[0]:
-            index = t[0].index(item)
+    for item in r:  # for each item in a list
+        if item in t[0]:  # searches header of table
+            index = t[0].index(item)  # finds all the values in index and adds them to new table
         counter = 0
         for row in t:
             if item not in t[0]:
@@ -103,9 +101,9 @@ def projection(t, r):
 
 def cross_product(t1, t2):
     """
-    :param: t1
-    :param: t2
-    Return the cross-product of tables t1 and t2.
+    :param: t1 a list of lists
+    :param: t2 a list of lists
+    :returns: cross-product of tables t1 and t2.
 
     Example:
     > R1 = [["A", "B"], [1,2], [3,4]]
@@ -115,12 +113,12 @@ def cross_product(t1, t2):
     """
     new_table = t1[0] + t2[0]
     new_table_2 = []
-    for l1 in t1[1:]:
-        for l2 in t2[1:]:
-            l3 = l1 + l2
+    for l1 in t1[1:]:  # iterate through table1
+        for l2 in t2[1:]:  # iterate through table2
+            l3 = l1 + l2  # create new table of the product of table1 and table2
             new_table_2.append(l3)
     new_table_2.insert(0, new_table)
-    if len(new_table_2) <= 1:
+    if len(new_table_2) <= 1:  # return None if table2 is empty
         return None
     else:
         return new_table_2

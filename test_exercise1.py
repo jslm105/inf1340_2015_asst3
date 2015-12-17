@@ -284,5 +284,3 @@ def test_cross_product_none():
     return: None (empty table)
     """
     assert cross_product(BLANK, BLANK2) is None
-
-
