@@ -77,6 +77,16 @@ def test_improper_passports():
     assert decide("test_improper_passports.json", "countries.json") ==\
            ["Reject", "Reject", "Reject"]
 
+def test_improper_visas():
+    """
+    Travellers with visas with more or less characters or "_" and mixed letter cases
+        1)Visa number is missing letter/digit
+        2)Visa number has extra letter/ digit
+        3)Visa number contains an underscore
+
+    """
+    assert decide("test_improper_passports.json", "countries.json") ==\
+           ["Reject", "Reject", "Reject"]
 
 def test_mixed_capitalization():
     """
